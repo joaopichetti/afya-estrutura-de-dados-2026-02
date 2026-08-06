@@ -4,13 +4,20 @@ void main() {
     Scanner scanner = new Scanner(System.in);
 
     // ENTRADA
-    System.out.println("Digite a primeira nota:");
-    double nota1 = scanner.nextDouble();
-    System.out.println("Digite a segunda nota:");
-    double nota2 = scanner.nextDouble();
+    System.out.println("Digite a quantidade de notas:");
+    int quantidadeNotas = scanner.nextInt();
+    double somaNotas = 0.0;
+
+    for (int indice = 0; indice < quantidadeNotas; indice++) {
+        int numeroProva = indice + 1;
+        System.out.println("Digite a nota da prova " + 
+            numeroProva + ":" );
+        double nota = scanner.nextDouble();
+        somaNotas += nota;
+    }
 
     // PROCESSAMENTO
-    double media = (nota1 + nota2) / 2.0;
+    double media = somaNotas / quantidadeNotas;
     String situacao;
 
     if (media >= 7.0) {
