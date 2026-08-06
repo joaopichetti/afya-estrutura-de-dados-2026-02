@@ -11,7 +11,17 @@ void main() {
 
     // PROCESSAMENTO
     double media = (nota1 + nota2) / 2.0;
+    String situacao;
+
+    if (media >= 7.0) {
+        situacao = "Aprovação direta!";
+    } else if (media >= 4.0) {
+        situacao = "Em exame";
+    } else {
+        situacao = "Reprovação direta";
+    }
 
     // SAÍDA
     System.out.println("Média: " + media);
+    System.out.println("Situação: " + situacao);
 }
