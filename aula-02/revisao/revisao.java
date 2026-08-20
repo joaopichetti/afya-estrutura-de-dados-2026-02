@@ -21,9 +21,12 @@ void main() {
         String mensagem = "Escolha uma opção:";
         opcao = (int) lerDadoValido(scanner, mensagem, 1, 4);
         switch (opcao) {
-            case 1 -> ...;
-            case 2 -> ...;
-            case 3 -> ...;
+            case 1 -> cadastrarAluno(scanner, frequencias, notas, 
+                cadastrados, quantidadeNotas, MAX_ALUNOS);
+            case 2 -> imprimirAlunoEspecifico(scanner, notas, 
+                frequencias, cadastrados, MAX_ALUNOS);
+            case 3 -> imprimirTodosAlunos(scanner, notas, frequencias, 
+                cadastrados, MAX_ALUNOS);
             case 4 -> System.out.println("\nSaindo do sistema. Até logo!");
             default -> System.out.println("Opção inválida...");
         }
@@ -98,4 +101,59 @@ void cadastrarAluno(
     cadastrados[id] = true;
 
     System.out.println("Aluno ID " + id + " cadastrado com sucesso!");
+}
+
+double calcularMedia(double[] notas) {
+    double somaNotas = 0.0;
+    for (int indice = 0; indice < notas.length; indice++) {
+        somaNotas += notas[indice];
+    }
+    return somaNotas / notas.length;
+}
+
+void exibirDadosAluno(int id, double[][] notas, double[] frequencias) {
+    double media = calcularMedia(notas[id]);
+    double frequencia = frequencias[id];
+    String situacao = verificarSituacao(media, frequencia);
+
+    System.out.printf(
+        "Aluno ID %d | Média %.2f | Frequência %.1f%% | Situação %s%n",
+        id, media, frequencia, situacao);
+}
+
+void imprimirAlunoEspecifico(
+    Scanner scanner,
+    double[][] notas,
+    double[] frequencias,
+    boolean[] cadastrados,
+    int maxAlunos
+) {
+    int id = lerId(scanner, maxAlunos);
+    if (!cadastrados[id]) {
+        System.out.println("Aluno ID " + id + " ainda não foi cadastrado.");
+        return;
+    }
+    exibirDadosAluno(id, notas, frequencias);
+}
+
+void imprimirTodosAlunos(
+    Scanner scanner,
+    double[][] notas,
+    double[] frequencias,
+    boolean[] cadastrados,
+    int maxAlunos
+) {
+    boolean existeAlunoCadastrado = false;
+    System.out.println("\n--- RELATÓRIO GERAL ---");
+
+    for (int indice = 0; indice < maxAlunos; indice++) {
+        if (cadastrados[indice]) {
+            exibirDadosAluno(indice, notas, frequencias);
+            existeAlunoCadastrado = true;
+        }
+    }
+
+    if (!existeAlunoCadastrado) {
+        System.out.println("Nenhum aluno cadastrado no sistema.");
+    }
 }
