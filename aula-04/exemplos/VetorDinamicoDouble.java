@@ -1,9 +1,21 @@
 public class VetorDinamicoDouble {
+    public static final int ESTRATEGIA_GEOMETRICA = 0;
+    public static final int ESTRATEGIA_LINEAR = 1;
+
     private double[] vetor;
     private int quantidadeRegistros;
+    private int estrategia;
 
     public VetorDinamicoDouble() {
-        this.vetor = new double[10];
+        this(10, ESTRATEGIA_GEOMETRICA);
+    }
+
+    public VetorDinamicoDouble(int capacidadeInicial, int estrategia) {
+        if (capacidadeInicial <= 0) {
+            capacidadeInicial = 10;
+        }
+        this.vetor = new double[capacidadeInicial];
+        this.estrategia = estrategia;
         this.quantidadeRegistros = 0;
     }
 
@@ -43,7 +55,12 @@ public class VetorDinamicoDouble {
 
     private void garantirCapacidade() {
         if (this.quantidadeRegistros == this.vetor.length) {
-            int novaCapacidade = this.vetor.length * 2;
+            int novaCapacidade;
+            if (this.estrategia == ESTRATEGIA_GEOMETRICA) {
+                novaCapacidade = this.vetor.length * 2;
+            } else {
+                novaCapacidade = this.vetor.length + 50;
+            }
             double[] novoVetor = new double[novaCapacidade];
 
             // Cópia manual dos valores
