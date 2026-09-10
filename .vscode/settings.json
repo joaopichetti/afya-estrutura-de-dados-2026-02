@@ -1,0 +1,10 @@
+{
+  "java.project.sourcePaths": [
+    "aula-02/revisao",
+    "aula-02/lista-exercicios",
+    "aula-03/exemplos",
+    "aula-04/exemplos",
+    "aula-05/exemplos"
+  ],
+  "java.inlayHints.parameterNames.enabled": "none"
+}
