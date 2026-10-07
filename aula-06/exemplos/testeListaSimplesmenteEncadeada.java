@@ -43,8 +43,18 @@ void main() {
     System.out.println("Índice do valor 30: " + lista.indexOf(30));
     System.out.println("Índice do valor 99 (inexistente): " + lista.indexOf(99));
     System.out.println();
+
+    System.out.println("--- 4. ATUALIZAÇÕES ---");
+    System.out.println("-> Atualizando índice 3 de " + lista.obter(3) + " para 35");
+    lista.atualizar(3, 35);
+    System.out.println("Estado: " + lista);
+
+    System.out.println("-> Atualizando último índice de " + lista.obter(lista.getTamanho() - 1) + " para 65");
+    lista.atualizar(lista.getTamanho() - 1, 65);
+    System.out.println("Estado: " + lista);
+    System.out.println();
     
-    System.out.println("--- 4. REMOÇÕES ---");
+    System.out.println("--- 5. REMOÇÕES ---");
     System.out.println("-> removerInicio(): retirado " + lista.removerInicio());
     System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
 

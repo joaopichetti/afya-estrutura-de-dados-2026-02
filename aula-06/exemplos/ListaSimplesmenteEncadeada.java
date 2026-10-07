@@ -285,4 +285,28 @@ public class ListaSimplesmenteEncadeada {
         // Retorna o dado do nó localizado no índice
         return atual.dado;
     }
+
+    // Altera o dado de um nó existente pelo índice informado. Complexidade: O(n)
+    public void atualizar(int indice, int novoDado) {
+        // Valida se o índice pertence ao intervalo válido [0, tamanho - 1]
+        if (indice < 0 || indice >= tamanho) {
+            throw new IndexOutOfBoundsException("Índice fora dos limites: " + indice);
+        }
+        // Otimização em O(1): se for a última posição, altera diretamente na cauda
+        if (indice == tamanho - 1) {
+            // Substitui o valor do nó referenciado por cauda
+            cauda.dado = novoDado;
+            // Encerra a execução antecipadamente
+            return;
+        }
+        // Ponteiro auxiliar para navegar a partir da cabeça
+        Node atual = cabeca;
+        // Avança até a posição do índice correspondente
+        for (int i = 0; i < indice; i++) {
+            // Move a referência para o próximo elo
+            atual = atual.proximo;
+        }
+        // Atualiza o conteúdo do nó localizado com o novo dado
+        atual.dado = novoDado;
+    }
 }
