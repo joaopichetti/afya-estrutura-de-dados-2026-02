@@ -36,7 +36,15 @@ void main() {
     System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
     System.out.println();
 
-    System.out.println("--- 3. REMOÇÕES ---");
+    System.out.println("--- 3. CONSULTAS E BUSCAS ---");
+    System.out.println("Elemento no índice 0 (cabeça): " + lista.obter(0));
+    System.out.println("Elemento no índice 3 (meio): " + lista.obter(3));
+    System.out.println("Elemento no índice final (cauda): " + lista.obter(lista.getTamanho() - 1));
+    System.out.println("Índice do valor 30: " + lista.indexOf(30));
+    System.out.println("Índice do valor 99 (inexistente): " + lista.indexOf(99));
+    System.out.println();
+    
+    System.out.println("--- 4. REMOÇÕES ---");
     System.out.println("-> removerInicio(): retirado " + lista.removerInicio());
     System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
 

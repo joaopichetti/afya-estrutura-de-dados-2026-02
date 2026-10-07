@@ -241,4 +241,48 @@ public class ListaSimplesmenteEncadeada {
         // Retorna o dado contido no nó desvinculado
         return removido.dado;
     }
+
+    // Busca linear que retorna a posição da 1ª ocorrência ou -1 se ausente. Complexidade: O(n)
+    public int indexOf(int elemento) {
+        // Ponteiro auxiliar posicionado na cabeça para iniciar o percurso
+        Node atual = cabeca;
+        // Contador sequencial para rastrear a posição do índice atual
+        int indice = 0;
+        // Itera enquanto houver nós válidos a serem examinados
+        while (atual != null) {
+            // Verifica se o valor do nó corrente é idêntico ao buscado
+            if (atual.dado == elemento) {
+                // Elemento localizado: retorna o índice da posição encontrada
+                return indice;
+            }
+            // Avança para o próximo nó da lista
+            atual = atual.proximo;
+            // Incrementa o índice para acompanhar o avanço na estrutura
+            indice++;
+        }
+        // Percorreu todos os nós sem encontrar o dado; retorna flag de ausência
+        return -1;
+    }
+
+    // Retorna o valor armazenado em um índice sem removê-lo. Complexidade: O(n)
+    public int obter(int indice) {
+        // Valida se o índice requisitado pertence ao intervalo [0, tamanho - 1]
+        if (indice < 0 || indice >= tamanho) {
+            throw new IndexOutOfBoundsException("Índice fora dos limites: " + indice);
+        }
+        // Otimização em O(1): se o índice requisitado for o último da lista
+        if (indice == tamanho - 1) {
+            // Retorna diretamente o valor da cauda sem varrer a estrutura
+            return cauda.dado;
+        }
+        // Ponteiro auxiliar iniciado no primeiro nó da lista
+        Node atual = cabeca;
+        // Itera sequencialmente até parar exatamente no nó da posição desejada
+        for (int i = 0; i < indice; i++) {
+            // Avança o ponteiro para o próximo nó
+            atual = atual.proximo;
+        }
+        // Retorna o dado do nó localizado no índice
+        return atual.dado;
+    }
 }
