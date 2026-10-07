@@ -70,4 +70,20 @@ void main() {
     System.out.println("-> remover(99) [por valor inexistente]: " + lista.remover(99));
     System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
     System.out.println();
+
+    System.out.println("--- 6. TRATAMENTO DE BORDAS E EXCEÇÕES ---");
+    try {
+        System.out.println("Tentando acessar índice inválido (10)...");
+        lista.obter(10);
+    } catch (IndexOutOfBoundsException e) {
+        System.out.println("Exceção capturada com sucesso: " + e.getMessage());
+    }
+    System.out.println();
+
+    System.out.println("--- 7. LIMPEZA COMPLETA ---");
+    System.out.println("-> Executando limpar()");
+    lista.limpar();
+    System.out.println("Estado: " + lista);
+    System.out.println("Está vazia? " + lista.estaVazia());
+    System.out.println("Tamanho final: " + lista.getTamanho());
 }

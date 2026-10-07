@@ -309,4 +309,14 @@ public class ListaSimplesmenteEncadeada {
         // Atualiza o conteúdo do nó localizado com o novo dado
         atual.dado = novoDado;
     }
+
+    // Esvazia a lista e libera os nós para a coleta de lixo. Complexidade: O(1)
+    public void limpar() {
+        // Corta a referência da cabeça, tornando o primeiro nó inacessível externamente
+        cabeca = null;
+        // Corta a referência da cauda para não manter o último nó ancorado
+        cauda = null;
+        // Zera o contador de elementos para manter o estado consistente
+        tamanho = 0;
+    }
 }
