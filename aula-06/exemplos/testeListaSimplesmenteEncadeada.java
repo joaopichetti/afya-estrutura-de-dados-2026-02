@@ -35,4 +35,21 @@ void main() {
     lista.inserir(lista.getTamanho(), 60);
     System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
     System.out.println();
+
+    System.out.println("--- 3. REMOÇÕES ---");
+    System.out.println("-> removerInicio(): retirado " + lista.removerInicio());
+    System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
+
+    System.out.println("-> removerFim(): retirado " + lista.removerFim());
+    System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
+
+    System.out.println("-> removerPorIndice(2): retirado " + lista.removerPorIndice(2));
+    System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
+
+    System.out.println("-> remover(35) [por valor existente]: " + lista.remover(35));
+    System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
+
+    System.out.println("-> remover(99) [por valor inexistente]: " + lista.remover(99));
+    System.out.println("Estado: " + lista + " | Tamanho: " + lista.getTamanho());
+    System.out.println();
 }

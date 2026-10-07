@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 public class ListaSimplesmenteEncadeada {
     // Primeiro nó da lista
     private Node cabeca;
@@ -112,5 +114,131 @@ public class ListaSimplesmenteEncadeada {
         representacao += "]";
         // Converte o buffer montado para String e retorna ao chamador
         return representacao;
+    }
+
+    // Remoção na cabeça da lista. Complexidade: O(1)
+    public int removerInicio() {
+        // Verifica se a estrutura está vazia antes de tentar a remoção (evita erro de underflow)
+        if (estaVazia()) {
+            throw new NoSuchElementException("Lista vazia.");
+        }
+        // Salva temporariamente o dado do primeiro nó para retornar ao chamador
+        int dado = cabeca.dado;
+        // Avança a referência da cabeça para o segundo nó (desconecta o primeiro da cadeia)
+        cabeca = cabeca.proximo;
+        // Decrementa o contador de nós da lista
+        tamanho--;
+        // Caso de borda: verifica se o nó removido era o único elemento existente
+        if (tamanho == 0) {
+            // Limpa a referência de cauda para que a lista fique 100% consistente e vazia
+            cauda = null;
+        }
+        // Retorna o valor que estava armazenado no nó recém-removido
+        return dado;
+    }
+
+    // Remove e retorna o elemento da última posição da lista. Complexidade: O(n)
+    public int removerFim() {
+        // Verifica se a lista está vazia para evitar erro de underflow
+        if (estaVazia()) {
+            throw new NoSuchElementException("Lista vazia.");
+        }
+        // Caso especial: lista com apenas um nó (cabeça e cauda são o mesmo objeto)
+        if (tamanho == 1) {
+            // Reaproveita a remoção do início, que já anula a cauda e zera o tamanho
+            return removerInicio();
+        }
+        // Ponteiro auxiliar iniciado na cabeça para localizar o penúltimo nó
+        Node penultimo = cabeca;
+        // Navega até o nó cujo próximo elemento seja exatamente a cauda atual
+        while (penultimo.proximo != cauda) {
+            // Avança a referência para o próximo elo da cadeia
+            penultimo = penultimo.proximo;
+        }
+        // Armazena temporariamente o valor do último nó antes do descarte
+        int dado = cauda.dado;
+        // Desconecta o último nó da cadeia apontando a referência do penúltimo para null
+        penultimo.proximo = null;
+        // Atualiza o ponteiro de cauda para que referencie o novo último nó
+        cauda = penultimo;
+        // Decrementa o contador total de nós
+        tamanho--;
+        // Retorna o valor primitivo do nó que foi desvinculado
+        return dado;
+    }
+
+    // Remoção por valor com técnica de Dois Ponteiros. Complexidade: O(n)
+    public boolean remover(int elemento) {
+        // Caso base: se a lista estiver vazia, não há o que remover
+        if (estaVazia()) {
+            return false;
+        }
+        // Caso especial: o elemento está logo no primeiro nó (cabeça)
+        if (cabeca.dado == elemento) {
+            // Reaproveita o método específico pare remover do início
+            removerInicio();
+            // Retorna verdadeiro confirmando que a remoção foi concluída
+            return true;
+        }
+        // Ponteiro que rastreia o nó predecessor ao que está sendo verificado
+        Node anterior = cabeca;
+        // Ponteiro de busca que começa a partir do segundo elemento
+        Node atual = cabeca.proximo;
+        // Itera sequencialmente enquanto houver nós a serem examinados
+        while (atual != null) {
+            // Compara o valor do nó corrente com o elemento buscado
+            if (atual.dado == elemento) {
+                // Desconecta o nó atual, ligando o anterior diretamente ao próximo nó
+                anterior.proximo = atual.proximo;
+                // Caso especial: verifica se o nó removido era o último elemento da lista
+                if (atual == cauda) {
+                    // Atualiza a referência da cauda para o nó anterior
+                    cauda = anterior;
+                }
+                // Decrementa a contagem de nós da estrutura
+                tamanho--;
+                // Encerra a execução confirmando a remoção bem-sucedida
+                return true;
+            }
+            // Avança o nó anterior para a posição atual
+            anterior = atual;
+            // Avança o nó atual para o próximo elo da cadeia
+            atual = atual.proximo;
+        }
+        // Percorreu toda a lista sem encontrar o elemento procurado
+        return false;
+    }
+
+    // Remove o nó em uma posição específica e retorna o seu valor. Complexidade: O(n)
+    public int removerPorIndice(int indice) {
+        // Valida se o índice está dentro da faixa [0, tamanho - 1]
+        if (indice < 0 || indice >= tamanho) {
+            throw new IndexOutOfBoundsException("Índice fora dos limites: " + indice);
+        }
+        // Caso especial: remoção no início (índice 0)
+        if (indice == 0) {
+            // Delega para a remoção inicial O(1) e retorna o valor removido
+            return removerInicio();
+        }
+        // Caso especial: remoção no fim (último elemento)
+        if (indice == tamanho - 1) {
+            // Delega para a remoção final e retorna o valor removido
+            return removerFim();
+        }
+        // Ponteiro auxiliar para parar no nó anterior ao que será removido (indice - 1)
+        Node anterior = cabeca;
+        // Itera até a posição imediatamente anterior ao nó alvo
+        for (int i = 0; i < (indice - 1); i++) {
+            // Move o ponteiro para o próximo elo
+            anterior = anterior.proximo;
+        }
+        // Guarda a referência do nó que será desconectado da estrutura
+        Node removido = anterior.proximo;
+        // Faz o nó anterior apontar para o próximo do nó removido (pula o removido)
+        anterior.proximo = removido.proximo;
+        // Decrementa o número total de nós da lista
+        tamanho--;
+        // Retorna o dado contido no nó desvinculado
+        return removido.dado;
     }
 }
