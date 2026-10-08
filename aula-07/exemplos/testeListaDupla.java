@@ -32,3 +32,49 @@ void imprimirFimAoInicio(ListaDupla lista) {
     }
     System.out.println("Início (Tamanho: " + lista.tamanho + ")");
 }
+
+// Inserção no Fim (O(1))
+void inserirFim(ListaDupla lista, int valor) {
+    // 1. Aloca nova memória para o nó
+    NoDuplo novo = new NoDuplo();
+    novo.valor = valor;
+    novo.proximo = null;
+    novo.anterior = null;
+
+    // Caso A: A lista está vazia
+    if (lista.inicio == null) {
+        lista.inicio = novo;
+        lista.fim = novo;
+    } 
+    // Caso B: A lista já possui um ou mais elementos
+    else {
+        // O anterior do novo nó é o antigo último
+        novo.anterior = lista.fim;
+        // O antigo último agora aponta para o novo
+        lista.fim.proximo = novo;
+        // O ponteiro de fim da lista avança
+        lista.fim = novo;
+    }
+    lista.tamanho++;
+}
+
+void inserirInicio(ListaDupla lista, int valor) {
+    // 1. Aloca nova memória para o nó
+    NoDuplo novo = new NoDuplo();
+    novo.valor = valor;
+    novo.anterior = null;
+    novo.proximo = null;
+
+    // Caso A: A lista está vazia
+    if (lista.inicio == null) {
+        lista.inicio = novo;
+        lista.fim = novo;
+    } 
+    // Caso B: A lista já possui um ou mais elementos
+    else {
+        novo.proximo = lista.inicio;
+        lista.inicio.anterior = novo;
+        lista.inicio = novo;
+    }
+    lista.tamanho++;
+}
