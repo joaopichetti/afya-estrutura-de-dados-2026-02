@@ -1,5 +1,22 @@
 void main() {
+    System.out.println("===========================================");
+    System.out.println("AULA PRÁTICA: LISTAS DUPLAMENTE ENCADEADAS");
+    System.out.println("===========================================");
 
+    ListaDupla lista = criarLista();
+
+    System.out.println("\n1. Inserindo elementos no fim (10, 20, 30):");
+    inserirFim(lista, 10);
+    inserirFim(lista, 20);
+    inserirFim(lista, 30);
+    imprimirInicioAoFim(lista);
+
+    System.out.println("\n2. Inserindo elemento no início (5):");
+    inserirInicio(lista, 5);
+    imprimirInicioAoFim(lista);
+
+    System.out.println("\n3. Demonstrando travessia reversa (do fim ao início):");
+    imprimirFimAoInicio(lista);
 }
 
 // Função para instanciar e zerar os ponteiros da lista
