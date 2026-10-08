@@ -89,8 +89,11 @@ void inserirInicio(ListaDupla lista, int valor) {
     } 
     // Caso B: A lista já possui um ou mais elementos
     else {
+        // O novo nó aponta para o antigo primeiro
         novo.proximo = lista.inicio;
+        // O antigo primeiro aponta para trás (novo)
         lista.inicio.anterior = novo;
+        // O início da lista passa a ser o novo nó
         lista.inicio = novo;
     }
     lista.tamanho++;
