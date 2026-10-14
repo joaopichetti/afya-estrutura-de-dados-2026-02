@@ -17,6 +17,10 @@ void main() {
 
     System.out.println("\n3. Demonstrando travessia reversa (do fim ao início):");
     imprimirFimAoInicio(lista);
+
+    System.out.println("\n4. Buscando elemento 20");
+    NoDuplo no20 = buscar(lista, 20);
+    System.out.println("Valor: " + no20.valor);
 }
 
 // Função para instanciar e zerar os ponteiros da lista
@@ -97,4 +101,20 @@ void inserirInicio(ListaDupla lista, int valor) {
         lista.inicio = novo;
     }
     lista.tamanho++;
+}
+
+// Algoritmo de Busca (O(n))
+// Retorna a referência direta do nó na memória (ou null se não encontrar)
+NoDuplo buscar(ListaDupla lista, int valorProcurado) {
+    NoDuplo atual = lista.inicio;
+
+    while (atual != null) {
+        if (atual.valor == valorProcurado) {
+            // Encontrou: retorna o endereço do nó atual
+            return atual;
+        }
+        atual = atual.proximo;
+    }
+
+    return null; // Percorreu toda a lista e não encontrou
 }
