@@ -31,6 +31,9 @@ void main() {
     imprimirInicioAoFim(lista);
     removerPorValor(lista, 30);
     imprimirInicioAoFim(lista);
+
+    // Demonstração da lista circular
+    demonstrarListaCircular();
 }
 
 // Função para instanciar e zerar os ponteiros da lista
@@ -180,4 +183,44 @@ boolean removerPorValor(ListaDupla lista, int valor) {
         return true;
     }
     return false;
+}
+
+void demonstrarListaCircular() {
+    System.out.println("\n-------------------------------------------");
+    System.out.println("TESTANDO VARIANTE CIRCULAR (ROUND-ROBIN)");
+    System.out.println("-------------------------------------------");
+
+    ListaDupla circular = criarLista();
+
+    // Simulação de processos de CPU recebendo tempo de processamento
+    int [] processosPID = {101, 102, 103};
+    for (int pid : processosPID) {
+        NoDuplo novo = new NoDuplo();
+        novo.valor = pid;
+        if (circular.inicio == null) {
+            circular.inicio = novo;
+            circular.fim = novo;
+            novo.proximo = novo;
+        } else {
+            novo.proximo = circular.inicio;
+            circular.fim.proximo = novo;
+            circular.fim = novo;
+        }
+        circular.tamanho++;
+    }
+
+    // Executando 2 ciclos completos de escalonamento
+    NoDuplo cpu = circular.inicio;
+    int ciclos = 6;
+    System.out.println("Execução de CPU: ");
+    for (int i = 0; i < ciclos; i++) {
+        System.out.println("PID " + cpu.valor + "] -> ");
+        cpu = cpu.proximo;
+    }
+    // Loop infinito
+    // while (cpu != null) {
+    //     System.out.println("PID " + cpu.valor + "] -> ");
+    //     cpu = cpu.proximo;
+    // }
+    System.out.println("(ciclo contínuo)");
 }
