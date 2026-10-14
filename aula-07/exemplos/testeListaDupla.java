@@ -18,9 +18,19 @@ void main() {
     System.out.println("\n3. Demonstrando travessia reversa (do fim ao início):");
     imprimirFimAoInicio(lista);
 
-    System.out.println("\n4. Buscando elemento 20");
+    System.out.println("\n4. Buscando elemento 20 e removendo via referência direta em O(1):");
     NoDuplo no20 = buscar(lista, 20);
-    System.out.println("Valor: " + no20.valor);
+    if (no20 != null) {
+        System.out.println("Nó com valor " + no20.valor + " encontrado na memória. Removendo...");
+        removerNo(lista, no20);
+    }
+    imprimirInicioAoFim(lista);
+
+    System.out.println("\n5. Removendo elemento da extremidade (5) por valor: ");
+    removerPorValor(lista, 5);
+    imprimirInicioAoFim(lista);
+    removerPorValor(lista, 30);
+    imprimirInicioAoFim(lista);
 }
 
 // Função para instanciar e zerar os ponteiros da lista
@@ -117,4 +127,57 @@ NoDuplo buscar(ListaDupla lista, int valorProcurado) {
     }
 
     return null; // Percorreu toda a lista e não encontrou
+}
+
+void removerNo(ListaDupla lista, NoDuplo noParaRemover) {
+    if (noParaRemover == null || lista.inicio == null) {
+        return;
+    }
+
+    // Caso 1: O nó a remover é o primeiro elemento
+    if (noParaRemover == lista.inicio) {
+        lista.inicio = noParaRemover.proximo;
+        if (lista.inicio != null) {
+            lista.inicio.anterior = null;
+        } else {
+            // Se a lista só tinha 1 nó e ele foi removido,
+            // o fim também vira null
+            lista.fim = null;
+        }
+    }
+    // Caso 2: O nó está no meio ou no fim
+    else {
+        noParaRemover.anterior.proximo = noParaRemover.proximo;
+    }
+
+    // Caso 3: O nó a remover é o último elemento
+    if (noParaRemover == lista.fim) {
+        lista.fim = noParaRemover.anterior;
+        if (lista.fim != null) {
+            lista.fim.proximo = null;
+        } else {
+            lista.inicio = null;
+        }
+    }
+    // Caso 4: O nó estava no meio (possui alguém depois dele)
+    else if (noParaRemover.proximo != null) {
+        // O elemento seguinte aponta para trás pulando o nó removido
+        noParaRemover.proximo.anterior = noParaRemover.anterior;
+    }
+
+    // Boa prática de engenharia: isolar os ponteiros do nó 
+    // removido para o Garbage Collector
+    noParaRemover.proximo = null;
+    noParaRemover.anterior = null;
+    lista.tamanho--;
+}
+
+// Remoção por Valor (O(n))
+boolean removerPorValor(ListaDupla lista, int valor) {
+    NoDuplo noEncontrado = buscar(lista, valor);
+    if (noEncontrado != null) {
+        removerNo(lista, noEncontrado);
+        return true;
+    }
+    return false;
 }
