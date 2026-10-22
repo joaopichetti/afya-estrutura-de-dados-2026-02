@@ -23,6 +23,20 @@ void main() {
     int valorTopo = peek(pilha);
     System.out.println("Elemento atualmente no topo: " + valorTopo);
     imprimirEstado(pilha);
+
+    System.out.println("\n5. Desempilhando elementos em ordem LIFO (Operação POP):");
+    int valorRemovido = pop(pilha);
+    System.out.println("-> pop() removeu: " + valorRemovido);
+    valorRemovido = pop(pilha);
+    System.out.println("-> pop() removeu: " + valorRemovido);
+    imprimirEstado(pilha);
+
+    while (!isEmpty(pilha)) {
+        valorRemovido = pop(pilha);
+        System.out.println("-> pop() removeu: " + valorRemovido);        
+    }
+    imprimirEstado(pilha);
+    pop(pilha);
 }
 
 Pilha criarPilha(int capacidade) {
@@ -61,6 +75,17 @@ int peek(Pilha pilha) {
         return -1;
     }
     return pilha.dados[pilha.topo];
+}
+
+int pop(Pilha pilha) {
+    if (isEmpty(pilha)) {
+        System.out.println("[ERRO] Stack Underflow! Não é possível remover de pilha vazia.");
+        return -1;
+    }
+    int valorRemovido = peek(pilha);
+    pilha.dados[pilha.topo] = 0;
+    pilha.topo = pilha.topo - 1;
+    return valorRemovido;
 }
 
 void imprimirEstado(Pilha pilha) {
