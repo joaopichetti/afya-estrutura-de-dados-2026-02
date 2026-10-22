@@ -18,6 +18,11 @@ void main() {
     push(pilha, 50);
     imprimirEstado(pilha);
     push(pilha, 60);
+
+    System.out.println("\n4. Consultando o topo sem remover (Operação PEEK):");
+    int valorTopo = peek(pilha);
+    System.out.println("Elemento atualmente no topo: " + valorTopo);
+    imprimirEstado(pilha);
 }
 
 Pilha criarPilha(int capacidade) {
@@ -48,6 +53,14 @@ boolean push(Pilha pilha, int valor) {
     pilha.dados[pilha.topo] = valor;
     System.out.println("-> push(" + valor + ") realizado com sucesso!");
     return true;
+}
+
+int peek(Pilha pilha) {
+    if (isEmpty(pilha)) {
+        System.out.println("[AVISO] Pilha vazia na consulta peek().");
+        return -1;
+    }
+    return pilha.dados[pilha.topo];
 }
 
 void imprimirEstado(Pilha pilha) {
