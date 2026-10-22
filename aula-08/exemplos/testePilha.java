@@ -6,6 +6,18 @@ void main() {
     System.out.println("\n1. Criando uma pilha com capacidade para 5 elementos");
     Pilha pilha = criarPilha(5);
     imprimirEstado(pilha);
+
+    System.out.println("\n2. Empilhando elementos (Operação PUSH):");
+    push(pilha, 10);
+    push(pilha, 20);
+    push(pilha, 30);
+    imprimirEstado(pilha);
+
+    System.out.println("\n3. Preenchendo até o limite e simulando Stack Overflow:");
+    push(pilha, 40);
+    push(pilha, 50);
+    imprimirEstado(pilha);
+    push(pilha, 60);
 }
 
 Pilha criarPilha(int capacidade) {
@@ -25,6 +37,17 @@ boolean isFull(Pilha pilha) {
 
 int size(Pilha pilha) {
     return pilha.topo + 1;
+}
+
+boolean push(Pilha pilha, int valor) {
+    if (isFull(pilha)) {
+        System.out.println("[ERRO] Stack Overflow! Pilha cheia ao tentar inserir: " + valor);
+        return false;
+    }
+    pilha.topo = pilha.topo + 1;
+    pilha.dados[pilha.topo] = valor;
+    System.out.println("-> push(" + valor + ") realizado com sucesso!");
+    return true;
 }
 
 void imprimirEstado(Pilha pilha) {
