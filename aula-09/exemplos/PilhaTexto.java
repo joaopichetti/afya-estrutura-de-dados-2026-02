@@ -1,0 +1,3 @@
+class PilhaTexto {
+    NoTexto topo;
+}
