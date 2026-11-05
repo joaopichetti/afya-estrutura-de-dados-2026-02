@@ -25,12 +25,17 @@ void main() {
     enqueueFilaNo(fila, "Paciente 08");
     imprimirFilaNo(fila);
 
-    System.out.println("\n3. Removendo primeiro elemento em operação constante (O(1))");
+    System.out.println("\n3. Consultando valor a ser removido");
+    String valorRemover = peekFilaNo(fila);
+    System.out.println("Valor a remover: " + valorRemover);
+    imprimirFilaNo(fila);
+    
+    System.out.println("\n4. Removendo primeiro elemento em operação constante (O(1))");
     String valorRemovido = dequeueFilaNo(fila);
     System.out.println("Removido: " + valorRemovido);
     imprimirFilaNo(fila);
 
-    System.out.println("\n4. Esvaziando toda a fila");
+    System.out.println("\n5. Esvaziando toda a fila");
     while (fila.cabeca != null) {
         valorRemovido = dequeueFilaNo(fila);
         System.out.println("Removido: " + valorRemovido);
@@ -86,4 +91,9 @@ String dequeueFilaNo(FilaNo fila) {
     }
     fila.tamanho--;
     return valorRemover;
+}
+
+String peekFilaNo(FilaNo fila) {
+    return (fila.cabeca == null)
+        ? null : fila.cabeca.valor;
 }

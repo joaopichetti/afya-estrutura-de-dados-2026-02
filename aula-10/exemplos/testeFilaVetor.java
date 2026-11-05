@@ -20,9 +20,14 @@ void main() {
     imprimirFilaVetor(fila);
     enqueueFilaVetor(fila, 60);
 
-    System.out.println("\n3. Removendo primeiro elemento (exige deslocar todos os demais na RAM):");
+    System.out.println("\n3. Consultando valor a ser removido");
+    int valorRemover = peekFilaVetor(fila);
+    System.out.println("Valor a remover: " + valorRemover);
+    imprimirFilaVetor(fila);
+
+    System.out.println("\n4. Removendo primeiro elemento (exige deslocar todos os demais na RAM):");
     int valorRemovido = dequeueFilaVetor(fila);
-    System.out.println("Removido: " + valorRemovido +
+    System.out.println("Valor removido: " + valorRemovido +
         " (Deslocou 20, 30, 40 e 50 uma casa para a esquerda!)");
     imprimirFilaVetor(fila);
 }
@@ -71,4 +76,12 @@ int dequeueFilaVetor(FilaVetor fila) {
     }
     fila.fim--;
     return valorRetornar;
+}
+
+int peekFilaVetor(FilaVetor fila) {
+    if (fila.fim == 0) {
+        System.out.println("Erro: Fila vazia!");
+        return -1;
+    }
+    return fila.valores[0];
 }
