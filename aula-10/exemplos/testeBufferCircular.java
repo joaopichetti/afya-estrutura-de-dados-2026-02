@@ -6,6 +6,12 @@ void main() {
     System.out.println("\n1. Inicializando Buffer Circular com capacidade para 5 registros:");
     BufferCircular buffer = criarBufferCircular(5);
     imprimirBufferCircular(buffer);
+
+    System.out.println("\n2. Enfileirando os primeiros registros (Operação ENQUEUE):");
+    enfileirar(buffer, "P1");
+    enfileirar(buffer, "P2");
+    enfileirar(buffer, "P3");
+    imprimirBufferCircular(buffer);
 }
 
 BufferCircular criarBufferCircular(int capacidade) {
@@ -35,4 +41,17 @@ void imprimirBufferCircular(BufferCircular buffer) {
     }
     System.out.println("] (inicio=" + buffer.inicio + ", fim=" +
         buffer.fim + ", quantidade= " + buffer.quantidade + ")");
+}
+
+boolean enfileirar(BufferCircular buffer, String registro) {
+    if (estaCheio(buffer)) {
+        System.out.println("[OVERFLOW] Fila lotada! Rejeitando: " + registro);
+        return false;        
+    }
+    buffer.valores[buffer.fim] = registro;
+    buffer.fim = (buffer.fim + 1) % buffer.valores.length;
+    buffer.quantidade++;
+    System.out.println("[ENQUEUE] Inserido: " + registro + 
+        " | Novo fim=" + buffer.fim);
+    return true;
 }
