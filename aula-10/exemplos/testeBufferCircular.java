@@ -31,6 +31,8 @@ void main() {
 
     System.out.println("\n6. Testando proteção contra Queue Overflow (Fila cheia):");
     enfileirar(buffer, "P8");
+
+    demonstrarBufferSobrescrita();
 }
 
 BufferCircular criarBufferCircular(int capacidade) {
@@ -94,4 +96,37 @@ String consultarInicio(BufferCircular buffer) {
         return null;
     }
     return buffer.valores[buffer.inicio];
+}
+
+void enfileirarComSobrescrita(BufferCircular buffer, String registro) {
+    if (estaCheio(buffer)) {
+        System.out.println("[OVERWRITE] Buffer cheio! " +
+            "Sobrescrevendo evento mais antigo (" +
+            buffer.valores[buffer.inicio] + ") por (" + 
+            registro + ")");
+        buffer.inicio = (buffer.inicio + 1) % buffer.valores.length;
+    } else {
+        buffer.quantidade++;
+    }
+    buffer.valores[buffer.fim] = registro;
+    buffer.fim = (buffer.fim + 1) % buffer.valores.length;
+}
+
+void demonstrarBufferSobrescrita() {
+    System.out.println("\n----------------------------------------------------------------");
+    System.out.println("RING BUFFER COM SOBRESCRITA CONTÍNUA (TELEMETRIA/LOGS)");
+    System.out.println("----------------------------------------------------------------");
+
+    BufferCircular buffer = criarBufferCircular(3);
+    enfileirarComSobrescrita(buffer, "LOG_01");
+    enfileirarComSobrescrita(buffer, "LOG_02");
+    enfileirarComSobrescrita(buffer, "LOG_03");
+    imprimirBufferCircular(buffer);
+
+    System.out.println("\nNovos eventos de telemetria chegam com o buffer lotado:");
+    enfileirarComSobrescrita(buffer, "LOG_04");
+    enfileirarComSobrescrita(buffer, "LOG_05");
+    imprimirBufferCircular(buffer);
+    String valorProcessar = consultarInicio(buffer);
+    System.out.println("Evento mais antigo preservado na janela (inicio): " + valorProcessar);
 }
