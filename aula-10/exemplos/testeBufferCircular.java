@@ -12,6 +12,25 @@ void main() {
     enfileirar(buffer, "P2");
     enfileirar(buffer, "P3");
     imprimirBufferCircular(buffer);
+
+    System.out.println("\n3. Consultando o próximo da fila sem remover (Operação PEEK):");
+    String valorProcessar = consultarInicio(buffer);
+    System.out.println("Próximo a ser processado (início): " + valorProcessar);
+
+    System.out.println("\n4. Desenfileirando 2 registros (Operação DEQUEUE - abre vagas nos índices 0 e 1):");
+    desenfileirar(buffer);
+    desenfileirar(buffer);
+    imprimirBufferCircular(buffer);
+
+    System.out.println("\n5. Enfileirando novos pacotes e demonstrando o Salto Circular (Wrap-Around):");
+    enfileirar(buffer, "P4");
+    enfileirar(buffer, "P5");
+    enfileirar(buffer, "P6");
+    enfileirar(buffer, "P7");
+    imprimirBufferCircular(buffer);
+
+    System.out.println("\n6. Testando proteção contra Queue Overflow (Fila cheia):");
+    enfileirar(buffer, "P8");
 }
 
 BufferCircular criarBufferCircular(int capacidade) {
@@ -54,4 +73,25 @@ boolean enfileirar(BufferCircular buffer, String registro) {
     System.out.println("[ENQUEUE] Inserido: " + registro + 
         " | Novo fim=" + buffer.fim);
     return true;
+}
+
+String desenfileirar(BufferCircular buffer) {
+    if (estaVazio(buffer)) {
+        System.out.println("[UNDERFLOW] Fila vazia! Nada para processar.");
+        return null;
+    }
+    String registroRemovido = buffer.valores[buffer.inicio];
+    buffer.valores[buffer.inicio] = null;
+    buffer.inicio = (buffer.inicio + 1) % buffer.valores.length;
+    buffer.quantidade--;
+    System.out.println("[DEQUEUE] Processado: " 
+        + registroRemovido + " | Novo inicio=" + buffer.inicio);
+        return registroRemovido;
+}
+
+String consultarInicio(BufferCircular buffer) {
+    if (estaVazio(buffer)) {
+        return null;
+    }
+    return buffer.valores[buffer.inicio];
 }
