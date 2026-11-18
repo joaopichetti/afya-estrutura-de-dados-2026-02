@@ -14,6 +14,9 @@ void main() {
 
     // Demonstração da Seção 5: Violação do pré-requisito de ordenação
     demonstrarFalhaVetorDesordenado();
+
+    // Demonstração da Seção 6: O bug do Integer Overflow no cálculo do meio
+    demonstrarIntegerOverflow();
 }
 
 // =========================================================================
@@ -232,4 +235,50 @@ void demonstrarFalhaVetorDesordenado() {
             + " | Busca Linear retornou índice " + rLinear.indice);
     System.out.println("FALHA SILENCIOSA: o 7 existe no índice " + rLinear.indice
             + ", mas a busca binária o descartou ao ir para a esquerda do 43!");
+}
+
+// =========================================================================
+// SEÇÃO 6: PONTO DE ATENÇÃO EM ENGENHARIA — O BUG DO INTEGER OVERFLOW
+// =========================================================================
+
+// Expressão clássica VULNERÁVEL: a soma (inicio + fim) pode ultrapassar 2^31 - 1
+int calcularMeioVulneravel(int inicio, int fim) {
+    return (inicio + fim) / 2;
+}
+
+// Expressão SEGURA: (fim - inicio) é uma distância, nunca maior que 'fim'
+int calcularMeioSeguro(int inicio, int fim) {
+    return inicio + (fim - inicio) / 2;
+}
+
+void demonstrarIntegerOverflow() {
+    System.out.println("\n----------------------------------------------------------------");
+    System.out.println("SEÇÃO 6: O BUG DO INTEGER OVERFLOW NO CÁLCULO DO ÍNDICE CENTRAL");
+    System.out.println("----------------------------------------------------------------");
+
+    System.out.println("Maior int positivo (2^31 - 1): " + Integer.MAX_VALUE);
+
+    // Simula uma janela de busca no final de um vetor com ~2 bilhões de posições
+    // (não alocamos o vetor real: 2 bilhões de ints ocupariam cerca de 8 GB de RAM)
+    int inicio = 1_500_000_000;
+    int fim = 2_000_000_000;
+    System.out.println("Janela simulada: inicio = " + inicio + ", fim = " + fim);
+
+    int soma = inicio + fim;
+    System.out.println("\ninicio + fim = " + soma + "  <-- ESTOUROU! Deveria ser 3.500.000.000");
+    System.out.println("Bits da soma: " + Integer.toBinaryString(soma)
+            + " (bit de sinal mais à esquerda = 1 -> negativo)");
+
+    int meioVulneravel = calcularMeioVulneravel(inicio, fim);
+    int meioSeguro = calcularMeioSeguro(inicio, fim);
+    System.out.println("\nmeio = (inicio + fim) / 2          -> " + meioVulneravel + "  (índice NEGATIVO!)");
+    System.out.println("meio = inicio + (fim - inicio) / 2 -> " + meioSeguro + "  (índice correto)");
+
+    // O que aconteceria em produção ao acessar vetor[meioVulneravel]:
+    int[] vetor = new int[10];
+    try {
+        System.out.println(vetor[meioVulneravel]);
+    } catch (ArrayIndexOutOfBoundsException e) {
+        System.out.println("\nAcesso a vetor[" + meioVulneravel + "] -> " + e);
+    }
 }
