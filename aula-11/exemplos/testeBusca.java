@@ -5,6 +5,9 @@ void main() {
 
     // Demonstração da Seção 3: Busca Linear (Sequencial) em vetor desordenado
     demonstrarBuscaLinear();
+
+    // Demonstração da Seção 3.2: Melhor, Pior e Caso Médio da Busca Linear
+    demonstrarCasosBuscaLinear();
 }
 
 // =========================================================================
@@ -59,4 +62,54 @@ void demonstrarBuscaLinear() {
     } else {
         System.out.println("Elemento " + valorBuscado + " não está presente no vetor.");
     }
+}
+
+// =========================================================================
+// SEÇÃO 3.2: ANÁLISE DE COMPLEXIDADE — CONTANDO AS COMPARAÇÕES
+// =========================================================================
+
+// Mesma busca linear, porém, contabilizando cada comparação realizada com o alvo
+ResultadoBusca buscalinearInstrumentada(int[] vetor, int alvo) {
+    ResultadoBusca resultado = new ResultadoBusca();
+    resultado.indice = -1;
+    resultado.comparacoes = 0;
+    for (int i = 0; i < vetor.length; i++) {
+        resultado.comparacoes++;
+        if (vetor[i] == alvo) {
+            resultado.indice = i;
+            return resultado;
+        }
+    }
+    return resultado;
+}
+
+void imprimirResultado(String rotulo, int alvo, ResultadoBusca r) {
+    System.out.println(rotulo + " -> alvo=" + alvo + " | índice=" + r.indice
+            + " | comparações=" + r.comparacoes);
+}
+
+void demonstrarCasosBuscaLinear() {
+    System.out.println("\n----------------------------------------------------------------");
+    System.out.println("SEÇÃO 3.2: MELHOR CASO Ω(1), PIOR CASO O(n) E CASO MÉDIO Θ(n)");
+    System.out.println("----------------------------------------------------------------");
+
+    int[] valores = { 42, 17, 89, 5, 23, 71, 12 };
+    imprimirVetor(valores);
+
+    ResultadoBusca melhorCaso = buscalinearInstrumentada(valores, 42);
+    ResultadoBusca piorCasoUltimaPosicao = buscalinearInstrumentada(valores, 12);
+    ResultadoBusca piorCasoInexistente = buscalinearInstrumentada(valores, 99);
+    imprimirResultado("Melhor caso (alvo em [0])        ", 42, melhorCaso);
+    imprimirResultado("Pior caso (alvo em [n - 1])      ", 12, piorCasoUltimaPosicao);
+    imprimirResultado("Pior caso (alvo inexistente)     ", 99, piorCasoInexistente);
+
+    // Caso médio: busca cada elemento do vetor uma vez e calcula a média de comparações
+    int totalComparacoes = 0;
+    for (int i = 0; i < valores.length; i++) {
+        ResultadoBusca resultado = buscalinearInstrumentada(valores, valores[i]);
+        totalComparacoes += resultado.comparacoes;
+    }
+    double media = (double) totalComparacoes / valores.length;
+    System.out.println("Caso médio (todos os alvos presentes): " + media
+            + " comparações | fórmula (n + 1) / 2 = " + (valores.length + 1) / 2.0);
 }
