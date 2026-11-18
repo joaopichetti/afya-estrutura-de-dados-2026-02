@@ -11,6 +11,9 @@ void main() {
 
     // Demonstração da Seção 4: Busca Binária (Divisão e Conquista) em vetor ordenado
     demonstrarBuscaBinaria();
+
+    // Demonstração da Seção 5: Violação do pré-requisito de ordenação
+    demonstrarFalhaVetorDesordenado();
 }
 
 // =========================================================================
@@ -193,4 +196,40 @@ void demonstrarBuscaBinaria() {
 
     System.out.println("\nPior caso O(log n) — alvo inexistente (procurando 50):");
     buscaBinariaInstrumentada(valoresOrdenados, 50);
+}
+
+// =========================================================================
+// SEÇÃO 5: O PRÉ-REQUISITO CRÍTICO — ORDENAÇÃO PRÉVIA
+// =========================================================================
+
+// Verifica a monotonicidade: vetor[i] <= vetor[i + 1] para todo i — custo O(n)
+boolean estaOrdenado(int[] vetor) {
+    for (int i = 0; i < vetor.length - 1; i++) {
+        if (vetor[i] > vetor[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void demonstrarFalhaVetorDesordenado() {
+    System.out.println("\n----------------------------------------------------------------");
+    System.out.println("SEÇÃO 5: ESTUDO DE CASO — BUSCA BINÁRIA EM VETOR DESORDENADO");
+    System.out.println("----------------------------------------------------------------");
+
+    int[] desordenado = { 12, 5, 89, 43, 21, 7, 65, 33 };
+    imprimirVetor(desordenado);
+    System.out.println("O vetor está ordenado? " + estaOrdenado(desordenado));
+
+    System.out.println("\nTentando localizar o valor 7 com Busca Binária:");
+    ResultadoBusca rBinaria = buscaBinariaInstrumentada(desordenado, 7);
+
+    System.out.println("\nTentando localizar o valor 7 com Busca Linear:");
+    ResultadoBusca rLinear = buscalinearInstrumentada(desordenado, 7);
+    imprimirResultado("Busca Linear", 7, rLinear);
+
+    System.out.println("Busca Binária retornou índice " + rBinaria.indice
+            + " | Busca Linear retornou índice " + rLinear.indice);
+    System.out.println("FALHA SILENCIOSA: o 7 existe no índice " + rLinear.indice
+            + ", mas a busca binária o descartou ao ir para a esquerda do 43!");
 }
