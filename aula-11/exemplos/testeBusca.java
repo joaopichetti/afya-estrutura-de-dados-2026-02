@@ -8,6 +8,9 @@ void main() {
 
     // Demonstração da Seção 3.2: Melhor, Pior e Caso Médio da Busca Linear
     demonstrarCasosBuscaLinear();
+
+    // Demonstração da Seção 4: Busca Binária (Divisão e Conquista) em vetor ordenado
+    demonstrarBuscaBinaria();
 }
 
 // =========================================================================
@@ -112,4 +115,82 @@ void demonstrarCasosBuscaLinear() {
     double media = (double) totalComparacoes / valores.length;
     System.out.println("Caso médio (todos os alvos presentes): " + media
             + " comparações | fórmula (n + 1) / 2 = " + (valores.length + 1) / 2.0);
+}
+
+// =========================================================================
+// SEÇÃO 4: A BUSCA BINÁRIA (DIVISÃO E CONQUISTA)
+// =========================================================================
+
+// Busca binária iterativa: a cada passo descarta metade da janela [inicio..fim]
+int executarBuscaBinaria(int[] vetorOrdenado, int alvo) {
+    int inicio = 0;
+    int fim = vetorOrdenado.length - 1;
+    while (inicio <= fim) {
+        int meio = (inicio + fim) / 2;
+        if (vetorOrdenado[meio] == alvo) {
+            return meio; // Alvo identificado com sucesso
+        }
+        if (vetorOrdenado[meio] < alvo) {
+            inicio = meio + 1; // O alvo está obrigatoriamente à direita do meio
+        } else {
+            fim = meio - 1; // O alvo está obrigatoriamente à esquerda do meio                
+        }
+    }
+    return -1; // Janela de busca esgotada sem encontrar o alvo
+}
+
+// Mesma busca binária, imprimindo a janela [inicio..fim] e o meio a cada passo
+ResultadoBusca buscaBinariaInstrumentada(int[] vetorOrdenado, int alvo) {
+    ResultadoBusca resultado = new ResultadoBusca();
+    resultado.indice = -1;
+    resultado.comparacoes = 0;
+    int inicio = 0;
+    int fim = vetorOrdenado.length - 1;
+    while (inicio <= fim) {
+        int meio = (inicio + fim) / 2;
+        resultado.comparacoes++;
+        System.out.print("Passo " + resultado.comparacoes + ": janela [" + inicio + " a " + fim
+                + "], meio = " + meio + " (valor " + vetorOrdenado[meio] + "). ");
+        if (vetorOrdenado[meio] == alvo) {
+            System.out.println(alvo + " == " + vetorOrdenado[meio] + " -> ALVO ENCONTRADO!");
+            resultado.indice = meio;
+            return resultado;
+        }
+        if (vetorOrdenado[meio] < alvo) {
+            System.out.println(alvo + " > " + vetorOrdenado[meio] + " -> descarta a metade esquerda [" + inicio + ".." + meio + "]");
+            inicio = meio + 1;
+        } else {
+            System.out.println(alvo + " < " + vetorOrdenado[meio] + " -> descarta a metade direita [" + meio + ".." + fim + "]");
+            fim = meio - 1;
+        }
+    }
+    System.out.println("Janela vazia (inicio=" + inicio + " > fim=" + fim + ") -> alvo inexistente.");
+    return resultado;
+}
+
+void demonstrarBuscaBinaria() {
+    System.out.println("\n----------------------------------------------------------------");
+    System.out.println("SEÇÃO 4: BUSCA BINÁRIA ITERATIVA — DIVISÃO E CONQUISTA O(log n)");
+    System.out.println("----------------------------------------------------------------");
+
+    // PRÉ-REQUISITO INDISPENSÁVEL: o vetor deve estar rigorosamente ordenado
+    int[] valoresOrdenados = { 5, 12, 17, 23, 42, 71, 89 };
+    imprimirVetor(valoresOrdenados);
+
+    int valorBuscado = 71;
+    int posicao = executarBuscaBinaria(valoresOrdenados, valorBuscado);
+    if (posicao != -1) {
+        System.out.println("Elemento " + valorBuscado + " localizado no índice: " + posicao);
+    } else {
+        System.out.println("Elemento " + valorBuscado + " não encontrado.");
+    }
+
+    System.out.println("\nRastreando a mecânica de descarte de janelas (procurando 71):");
+    buscaBinariaInstrumentada(valoresOrdenados, 71);
+
+    System.out.println("\nMelhor caso Ω(1) — alvo exatamente no índice mediano (procurando 23):");
+    buscaBinariaInstrumentada(valoresOrdenados, 23);
+
+    System.out.println("\nPior caso O(log n) — alvo inexistente (procurando 50):");
+    buscaBinariaInstrumentada(valoresOrdenados, 50);
 }
