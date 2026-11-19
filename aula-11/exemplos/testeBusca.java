@@ -20,6 +20,9 @@ void main() {
 
     // Demonstração da Seção 7: Comparativo de complexidade em escala crescente
     demonstrarComparativoEscala();
+
+    // Demonstração da Seção 8.1: Ponto de equilíbrio (break-even) entre ordenar e buscar
+    demonstrarPontoEquilibrio();
 }
 
 // =========================================================================
@@ -350,4 +353,68 @@ void demonstrarComparativoEscala() {
                 (t1 - t0) / 1_000_000.0, (t2 - t1) / 1_000_000.0);
     }
     System.out.println("\nCada vez que n dobra: a linear dobra o trabalho, a binária faz só +1 comparação.");
+}
+
+// =========================================================================
+// SEÇÃO 8.1: VISÃO DO ARQUITETO — PONTO DE EQUILÍBRIO (BREAK-EVEN)
+// =========================================================================
+
+// Gera um lote de n valores desordenados (semente fixa para resultados reprodutíveis)
+int[] gerarVetorDesordenado(int n, Random gerador) {
+    int[] vetor = new int[n];
+    for (int i = 0; i < n; i++) {
+        vetor[i] = gerador.nextInt(2 * n);
+    }
+    return vetor;
+}
+
+// Abordagem 1: k buscas lineares diretas no lote desordenado -> O(k · n)
+long medirAbordagemLinear(int[] lote, int[] consultas) {
+    long t0 = System.nanoTime();
+    for (int i = 0; i < consultas.length; i++) {
+        executarBuscaLinear(lote, consultas[i]);
+    }
+    return System.nanoTime() - t0;
+}
+
+// Abordagem 2: ordena uma única vez e faz k buscas binárias -> O(n log n) + k · O(log n)
+long medirAbordagemOrdenarEBuscar(int[] lote, int[] consultas) {
+    long t0 = System.nanoTime();
+    int[] copia = Arrays.copyOf(lote, lote.length); // Preserva o lote original
+    Arrays.sort(copia); // Ordenação da biblioteca padrão: O(n log n)
+    for (int i = 0; i < consultas.length; i++) {
+        executarBuscaBinaria(copia, consultas[i]);
+    }
+    return System.nanoTime() - t0;
+}
+
+void demonstrarPontoEquilibrio() {
+    System.out.println("\n----------------------------------------------------------------");
+    System.out.println("SEÇÃO 8.1: PONTO DE EQUILÍBRIO — BUSCA LINEAR VS. ORDENAR + BINÁRIA");
+    System.out.println("----------------------------------------------------------------");
+
+    Random gerador = new Random(2026);
+    int n = 100_000;
+    int[] lote = gerarVetorDesordenado(n, gerador);
+    System.out.println("Lote recebido pelo microsserviço: n = " + n + " itens desordenados.\n");
+
+    int[] quantidadesConsultas = { 1, 10, 100, 1_000, 10_000 };
+
+    System.out.printf("%8s | %20s | %22s | %s%n", "k", "1) Linear (ms)", "2) Ordenar+Bin (ms)", "Vencedora");
+    for (int q = 0; q < quantidadesConsultas.length; q++) {
+        int k = quantidadesConsultas[q];
+        int[] consultas = new int[k];
+        for (int i = 0; i < k; i++) {
+            consultas[i] = gerador.nextInt(2 * n); // Chaves no mesmo intervalo do lote
+        }
+
+        long tempoLinear = medirAbordagemLinear(lote, consultas);
+        long tempoOrdenado = medirAbordagemOrdenarEBuscar(lote, consultas);
+        String vencedora = (tempoLinear < tempoOrdenado) ? "Linear direta" : "Ordenar + Binária";
+
+        System.out.printf("%,8d | %20.3f | %22.3f | %s%n",
+                k, tempoLinear / 1_000_000.0, tempoOrdenado / 1_000_000.0, vencedora);
+    }
+    System.out.println("\nPoucas consultas (k pequeno): ordenar não compensa.");
+    System.out.println("Muitas consultas (k >> 1): o custo O(n log n) da ordenação é amortizado.");
 }
