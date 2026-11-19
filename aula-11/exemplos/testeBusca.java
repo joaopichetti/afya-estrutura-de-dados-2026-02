@@ -23,6 +23,9 @@ void main() {
 
     // Demonstração da Seção 8.1: Ponto de equilíbrio (break-even) entre ordenar e buscar
     demonstrarPontoEquilibrio();
+
+    // Demonstração da Seção 8.2: Paralelo com SGBDs — Full Table Scan vs. Index Seek
+    demonstrarCatalogoProdutos();
 }
 
 // =========================================================================
@@ -417,4 +420,92 @@ void demonstrarPontoEquilibrio() {
     }
     System.out.println("\nPoucas consultas (k pequeno): ordenar não compensa.");
     System.out.println("Muitas consultas (k >> 1): o custo O(n log n) da ordenação é amortizado.");
+}
+
+// =========================================================================
+// SEÇÃO 8.2: PARALELO COM BANCOS DE DADOS — FULL TABLE SCAN VS. INDEX SEEK
+// =========================================================================
+
+// Popula a "tabela" de produtos já ordenada pela chave primária 'codigo'
+Produto[] criarCatalogo(int quantidade) {
+    Produto[] catalogo = new Produto[quantidade];
+    for (int i = 0; i < quantidade; i++) {
+        Produto p = new Produto();
+        p.codigo = 1000 + i * 3; // Códigos crescentes, porém não consecutivos
+        p.nome = "PROD-" + Integer.toHexString(p.codigo * 7919).toUpperCase(); // Nomes sem ordem alguma
+        p.preco = 10.0 + (i % 500);
+        catalogo[i] = p;
+    }
+    return catalogo;
+}
+
+// SELECT * FROM produtos WHERE nome = ?  (coluna sem índice -> Full Table Scan, O(n))
+ResultadoBusca buscarProdutoPorNome(Produto[] catalogo, String nome) {
+    ResultadoBusca r = new ResultadoBusca();
+    r.indice = -1;
+    r.comparacoes = 0;
+    for (int i = 0; i < catalogo.length; i++) {
+        r.comparacoes++;
+        if (catalogo[i].nome.equals(nome)) {
+            r.indice = i;
+            return r;
+        }
+    }
+    return r;
+}
+
+// SELECT * FROM produtos WHERE codigo = ?  (coluna indexada/ordenada -> Index Seek, O(log n))
+ResultadoBusca buscarProdutoPorCodigo(Produto[] catalogo, int codigo) {
+    ResultadoBusca r = new ResultadoBusca();
+    r.indice = -1;
+    r.comparacoes = 0;
+    int inicio = 0;
+    int fim = catalogo.length - 1;
+    while (inicio <= fim) {
+        int meio = inicio + (fim - inicio) / 2;
+        r.comparacoes++;
+        if (catalogo[meio].codigo == codigo) {
+            r.indice = meio;
+            return r;
+        }
+        if (catalogo[meio].codigo < codigo) {
+            inicio = meio + 1;
+        } else {
+            fim = meio - 1;
+        }
+    }
+    return r;
+}
+
+void imprimirProdutoEncontrado(Produto[] catalogo, ResultadoBusca r) {
+    if (r.indice == -1) {
+        System.out.println("   Nenhum produto encontrado (" + r.comparacoes + " comparações).");
+        return;
+    }
+    Produto p = catalogo[r.indice];
+    System.out.printf("   Linha %d -> {codigo: %d, nome: '%s', preco: %.2f} | %,d comparações%n",
+            r.indice, p.codigo, p.nome, p.preco, r.comparacoes);
+}
+
+void demonstrarCatalogoProdutos() {
+    System.out.println("\n----------------------------------------------------------------");
+    System.out.println("SEÇÃO 8.2: ESTUDO DE CASO — CATÁLOGO DE PRODUTOS (FULL SCAN VS. INDEX SEEK)");
+    System.out.println("----------------------------------------------------------------");
+
+    Produto[] catalogo = criarCatalogo(1_000_000);
+    System.out.println("Tabela 'produtos' carregada com " + catalogo.length + " linhas (ordenada por codigo).");
+
+    // Escolhe um produto próximo ao final da tabela para consultar pelos dois caminhos
+    Produto alvo = catalogo[catalogo.length - 10];
+
+    System.out.println("\nSELECT * FROM produtos WHERE nome = '" + alvo.nome + "';  -- Full Table Scan");
+    imprimirProdutoEncontrado(catalogo, buscarProdutoPorNome(catalogo, alvo.nome));
+
+    System.out.println("\nSELECT * FROM produtos WHERE codigo = " + alvo.codigo + ";  -- Index Seek");
+    imprimirProdutoEncontrado(catalogo, buscarProdutoPorCodigo(catalogo, alvo.codigo));
+
+    System.out.println("\nSELECT * FROM produtos WHERE codigo = 1001;  -- código inexistente");
+    imprimirProdutoEncontrado(catalogo, buscarProdutoPorCodigo(catalogo, 1001));
+
+    System.out.println("\nMesmo registro, mesmo resultado — a diferença está apenas no caminho de acesso.");
 }
