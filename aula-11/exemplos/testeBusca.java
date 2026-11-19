@@ -17,6 +17,9 @@ void main() {
 
     // Demonstração da Seção 6: O bug do Integer Overflow no cálculo do meio
     demonstrarIntegerOverflow();
+
+    // Demonstração da Seção 7: Comparativo de complexidade em escala crescente
+    demonstrarComparativoEscala();
 }
 
 // =========================================================================
@@ -281,4 +284,70 @@ void demonstrarIntegerOverflow() {
     } catch (ArrayIndexOutOfBoundsException e) {
         System.out.println("\nAcesso a vetor[" + meioVulneravel + "] -> " + e);
     }
+}
+
+// =========================================================================
+// SEÇÃO 7: COMPARATIVO DE COMPLEXIDADE E ESCALA COMPUTACIONAL
+// =========================================================================
+
+// Busca binária contabilizando comparações, sem impressões (para vetores grandes)
+ResultadoBusca buscaBinariaInstrumentadaSemLog(int[] vetorOrdenado, int alvo) {
+    ResultadoBusca r = new ResultadoBusca();
+    r.indice = -1;
+    r.comparacoes = 0;
+    int inicio = 0;
+    int fim = vetorOrdenado.length - 1;
+    while (inicio <= fim) {
+        int meio = inicio + (fim - inicio) / 2;
+        r.comparacoes++;
+        if (vetorOrdenado[meio] == alvo) {
+            r.indice = meio;
+            return r;
+        }
+        if (vetorOrdenado[meio] < alvo) {
+            inicio = meio + 1;
+        } else {
+            fim = meio - 1;
+        }
+    }
+    return r;
+}
+
+// Gera um vetor já ordenado com os números pares 0, 2, 4, ..., 2(n - 1)
+int[] gerarVetorOrdenado(int n) {
+    int[] vetor = new int[n];
+    for (int i = 0; i < n; i++) {
+        vetor[i] = i * 2;
+    }
+    return vetor;
+}
+
+void demonstrarComparativoEscala() {
+    System.out.println("\n----------------------------------------------------------------");
+    System.out.println("SEÇÃO 7: COMPARATIVO O(n) VS. O(log n) EM ESCALA CRESCENTE");
+    System.out.println("----------------------------------------------------------------");
+    System.out.println("Pior caso: buscando um valor ímpar (inexistente) maior que todos os elementos.\n");
+
+    int[] tamanhos = { 1_000, 100_000, 1_000_000, 10_000_000, 100_000_000 };
+
+    System.out.printf("%13s | %13s | %9s | %8s | %10s | %10s | %10s%n",
+            "n", "Linear (cmp)", "Bin (cmp)", "⌈log₂ n⌉", "Fator", "Linear(ms)", "Bin(ms)");
+    for (int t = 0; t < tamanhos.length; t++) {
+        int n = tamanhos[t];
+        int[] vetor = gerarVetorOrdenado(n);
+        int alvoInexistente = 2 * n + 1;
+
+        long t0 = System.nanoTime();
+        ResultadoBusca rLinear = buscalinearInstrumentada(vetor, alvoInexistente);
+        long t1 = System.nanoTime();
+        ResultadoBusca rBinaria = buscaBinariaInstrumentadaSemLog(vetor, alvoInexistente);
+        long t2 = System.nanoTime();
+
+        int log2Teto = (int) Math.ceil(Math.log(n) / Math.log(2));
+        long fator = rLinear.comparacoes / rBinaria.comparacoes;
+        System.out.printf("%,13d | %,13d | %9d | %8d | %,9dx | %10.3f | %10.4f%n",
+                n, rLinear.comparacoes, rBinaria.comparacoes, log2Teto, fator,
+                (t1 - t0) / 1_000_000.0, (t2 - t1) / 1_000_000.0);
+    }
+    System.out.println("\nCada vez que n dobra: a linear dobra o trabalho, a binária faz só +1 comparação.");
 }
